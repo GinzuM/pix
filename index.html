@@ -4,14 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popup do OBS</title>
+    <style>
+        button {
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
+    <!-- Botão para reenviar notificações -->
+    <button onclick="reenviarNotificacao()">Reenviar Notificação</button>
+
     <!-- Incorpore o widget utilizando um iframe -->
-    <iframe src="https://widget.livepix.gg/embed/858ea236-3f1e-48f2-a0b1-ddc3f4723144" 
+    <iframe id="widgetIframe" 
+        src="https://widget.livepix.gg/embed/858ea236-3f1e-48f2-a0b1-ddc3f4723144" 
         width="800" 
         height="600" 
         frameborder="0" 
         allowfullscreen>
     </iframe>
+
+    <script>
+        function reenviarNotificacao() {
+            // Altere esta função conforme necessário para disparar ações específicas
+            const iframe = document.getElementById("widgetIframe");
+            iframe.src = iframe.src; // Recarrega o iframe
+        }
+    </script>
 </body>
 </html>
