@@ -19,6 +19,8 @@ export default async function handler(req, res) {
                 }),
             });
 
+            console.log(`[${new Date().toISOString()}] Resposta da API Livepix:`, response.status, response.statusText);
+
             if (!response.ok) {
                 throw new Error(`Erro ao obter o token: ${response.status} - ${response.statusText}`);
             }
