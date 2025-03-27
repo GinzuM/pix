@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popup do OBS - Blog</title>
+    <title>Blog de Mensagens Automático</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,17 +25,14 @@
     </style>
 </head>
 <body>
-    <h1>Blog de Mensagens</h1>
+    <h1>Blog de Mensagens Automático</h1>
     
-    <!-- Área onde os textos das mensagens aparecerão -->
+    <!-- Área onde as mensagens aparecerão -->
     <div id="blogMessages">
         <h2>Mensagens:</h2>
-        <!-- Mensagens serão adicionadas dinamicamente aqui -->
     </div>
 
-    <button onclick="adicionarMensagem()">Adicionar Mensagem</button>
-
-    <!-- Incorpore o widget utilizando um iframe -->
+    <!-- Incorpore o widget -->
     <iframe id="widgetIframe" 
         src="https://widget.livepix.gg/embed/858ea236-3f1e-48f2-a0b1-ddc3f4723144" 
         width="800" 
@@ -45,18 +42,21 @@
     </iframe>
 
     <script>
-        // Função para adicionar mensagem ao blog
-        function adicionarMensagem() {
-            // Aqui, você precisaria capturar os textos do iframe ou usar uma API fornecida pelo widget
+        // Escuta mensagens enviadas pelo iframe (caso o widget use postMessage)
+        window.addEventListener("message", function(event) {
+            // Verifica se a origem é confiável
+            if (event.origin !== "https://widget.livepix.gg") return;
+
+            // Captura o conteúdo da mensagem enviada pelo widget
+            const mensagemTexto = event.data;
+
+            // Adiciona a mensagem automaticamente ao blog
             const mensagensContainer = document.getElementById("blogMessages");
-            
-            // Exemplo estático de mensagem (substitua pelo conteúdo real do widget)
             const novaMensagem = document.createElement("div");
             novaMensagem.className = "message";
-            novaMensagem.textContent = "Esta é uma mensagem extraída do widget!";
-            
+            novaMensagem.textContent = mensagemTexto; // Adiciona o texto recebido
             mensagensContainer.appendChild(novaMensagem);
-        }
+        });
     </script>
 </body>
 </html>
