@@ -42,7 +42,7 @@
     </iframe>
 
     <script>
-        // Escuta mensagens enviadas pelo iframe (caso o widget use postMessage)
+        // Escuta mensagens enviadas pelo iframe
         window.addEventListener("message", function(event) {
             // Verifica se a origem é confiável
             if (event.origin !== "https://widget.livepix.gg") return;
@@ -50,11 +50,24 @@
             // Captura o conteúdo da mensagem enviada pelo widget
             const mensagemTexto = event.data;
 
+            // Verifica se o conteúdo é um objeto e extrai a informação correta
+            let textoParaExibir;
+            if (typeof mensagemTexto === "object") {
+                try {
+                    // Converter para string ou acessar propriedades específicas
+                    textoParaExibir = JSON.stringify(mensagemTexto);
+                } catch (error) {
+                    textoParaExibir = "Erro ao processar a mensagem recebida.";
+                }
+            } else {
+                textoParaExibir = mensagemTexto; // Se já for texto, usa diretamente
+            }
+
             // Adiciona a mensagem automaticamente ao blog
             const mensagensContainer = document.getElementById("blogMessages");
             const novaMensagem = document.createElement("div");
             novaMensagem.className = "message";
-            novaMensagem.textContent = mensagemTexto; // Adiciona o texto recebido
+            novaMensagem.textContent = textoParaExibir; // Adiciona o texto recebido
             mensagensContainer.appendChild(novaMensagem);
         });
     </script>
