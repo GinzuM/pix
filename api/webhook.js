@@ -5,7 +5,8 @@ export default async function handler(req, res) {
         const tokenUrl = 'https://oauth.livepix.gg/oauth2/token';
 
         try {
-            console.log(`[${new Date().toISOString()}] Iniciando requisição para obter o token...`);
+            console.log(`[${new Date().toISOString()}] Iniciando a requisição para obter o token...`);
+            
             const response = await fetch(tokenUrl, {
                 method: 'POST',
                 headers: {
@@ -19,17 +20,20 @@ export default async function handler(req, res) {
                 }),
             });
 
-            console.log(`[${new Date().toISOString()}] Resposta da API Livepix:`, response.status, response.statusText);
-
+            console.log(`[${new Date().toISOString()}] Status da resposta: ${response.status} - ${response.statusText}`);
+            
             if (!response.ok) {
-                throw new Error(`Erro ao obter o token: ${response.status} - ${response.statusText}`);
+                const errorMessage = `Erro ao obter o token: ${response.status} - ${response.statusText}`;
+                console.error(`[${new Date().toISOString()}] ${errorMessage}`);
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
             console.log(`[${new Date().toISOString()}] Token gerado com sucesso: ${data.access_token}`);
+            
             res.status(200).json({ token: data.access_token });
         } catch (error) {
-            console.error(`[${new Date().toISOString()}] Erro ao obter o token:`, error.message);
+            console.error(`[${new Date().toISOString()}] Erro ao obter o token: ${error.message}`);
             res.status(500).json({ message: 'Erro ao obter o token', error: error.message });
         }
     } else {
