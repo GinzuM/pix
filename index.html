@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Livepix Webhook</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .post {
+            background-color: #fff;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #333;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mensagens Recebidas via Webhook</h1>
+    <div id="token-log" class="log">
+        <strong>Token gerado:</strong> <span id="token"></span>
+    </div>
+    <div id="log" class="log">
+        <strong>Log:</strong>
+        <div id="log-content"></div>
+    </div>
+    <div id="posts">
+        <!-- Mensagens recebidas serão exibidas aqui -->
+    </div>
+
+    <script>
+        // Exibe logs na interface
+        function exibirLog(logMessage) {
+            const logContent = document.getElementById('log-content');
+            const p = document.createElement('p');
+            p.textContent = logMessage;
+            logContent.appendChild(p);
+        }
+
+        // Exibe o token na interface
+        function exibirToken(token) {
+            const tokenElement = document.getElementById('token');
+            tokenElement.textContent = token || "Token não encontrado";
+        }
+
+        // Função para obter o token do backend
+        async function obterTokenDoBackend() {
+            try {
+                const response = await fetch('/api/webhook', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro ao obter o token do backend: ${response.status} - ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Token obtido do backend:', data.token);
+                exibirToken(data.token); // Exibe o token na interface
+                exibirLog('Token obtido com sucesso.');
+            } catch (error) {
+                console.error('Erro ao obter o token do backend:', error);
+                exibirLog(`Erro ao obter o token do backend: ${error.message}`);
+            }
+        }
+
+        // Inicia o processo de obtenção do token ao carregar a página
+        obterTokenDoBackend();
+    </script>
+</body>
+</html>
