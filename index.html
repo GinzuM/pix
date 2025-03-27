@@ -3,26 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popup do OBS</title>
+    <title>Popup do OBS - Blog</title>
     <style>
-        button {
+        body {
+            font-family: Arial, sans-serif;
             margin: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
         }
 
-        button:hover {
-            background-color: #45a049;
+        #blogMessages {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-    <!-- Botão para reenviar notificações -->
-    <button onclick="reenviarNotificacao()">Reenviar Notificação</button>
+    <h1>Blog de Mensagens</h1>
+    
+    <!-- Área onde os textos das mensagens aparecerão -->
+    <div id="blogMessages">
+        <h2>Mensagens:</h2>
+        <!-- Mensagens serão adicionadas dinamicamente aqui -->
+    </div>
+
+    <button onclick="adicionarMensagem()">Adicionar Mensagem</button>
 
     <!-- Incorpore o widget utilizando um iframe -->
     <iframe id="widgetIframe" 
@@ -34,10 +45,17 @@
     </iframe>
 
     <script>
-        function reenviarNotificacao() {
-            // Altere esta função conforme necessário para disparar ações específicas
-            const iframe = document.getElementById("widgetIframe");
-            iframe.src = iframe.src; // Recarrega o iframe
+        // Função para adicionar mensagem ao blog
+        function adicionarMensagem() {
+            // Aqui, você precisaria capturar os textos do iframe ou usar uma API fornecida pelo widget
+            const mensagensContainer = document.getElementById("blogMessages");
+            
+            // Exemplo estático de mensagem (substitua pelo conteúdo real do widget)
+            const novaMensagem = document.createElement("div");
+            novaMensagem.className = "message";
+            novaMensagem.textContent = "Esta é uma mensagem extraída do widget!";
+            
+            mensagensContainer.appendChild(novaMensagem);
         }
     </script>
 </body>
