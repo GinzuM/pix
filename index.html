@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Livepix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .post {
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .post h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .post p {
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Mensagens Recebidas</h1>
+
+    <div id="posts">
+        <!-- Os posts serão carregados aqui -->
+    </div>
+
+    <script>
+        async function obterToken() {
+            const clientId = '8eb79fff-4794-4375-847b-b2487f5ae7d8'; // ID do cliente fornecido
+            const clientSecret = 'hopszCKsQSB0Y8f+SE9YygpuC8QKHvG1albZSHP/7DIynFkuHWaWdUEMTeBXwLzW819Ir7Rx47Qi8eJmoTLMXCLT62bGLQe7SFJ+1Gjo91jiCH+Qo4wft/ZsXclo3avP7ePqGPzYkNLL4zw4IJHjExCPUkHLGZLFTBfIy75x8Cc'; // Segredo do cliente fornecido
+            const tokenUrl = '<URL_DO_ENDPOINT_DE_AUTENTICAÇÃO>'; // SUBSTITUA pela URL do endpoint de autenticação
+
+            try {
+                const response = await fetch(tokenUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'grant_type': 'client_credentials',
+                        'client_id': clientId,
+                        'client_secret': clientSecret
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter o token: ' + response.statusText);
+                }
+
+                const data = await response.json();
+                console.log('Token de acesso:', data.access_token);
+                return data.access_token;
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        async function carregarPosts() {
+            const apiUrl = '<URL_DA_API>'; // SUBSTITUA pela URL da API para recuperar as mensagens
+            const token = await obterToken(); // Obter o token de acesso
+
+            try {
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Configuração do cabeçalho com o token
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar as mensagens: ' + response.statusText);
+                }
+
+                const data = await response.json();
+                const posts = data.mensagens; // SUBSTITUA pelo formato correto da resposta da API
+
+                const container = document.getElementById('posts');
+                container.innerHTML = ''; // Limpa o conteúdo atual
+
+                posts.forEach(post => {
+                    const div = document.createElement('div');
+                    div.classList.add('post');
+                    div.innerHTML = `
+                        <h3>${post.sender}</h3>
+                        <p>${post.message}</p>
+                    `;
+                    container.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar as mensagens:', error);
+                const container = document.getElementById('posts');
+                container.innerHTML = '<p style="color: red;">Erro ao carregar as mensagens. Tente novamente mais tarde.</p>';
+            }
+        }
+
+        // Carregar os posts assim que a página for aberta
+        carregarPosts();
+    </script>
+</body>
+</html>
