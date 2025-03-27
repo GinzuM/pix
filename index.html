@@ -8,40 +8,32 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+            margin: 20px;
         }
         .post {
             background-color: white;
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .post h3 {
-            margin: 0;
-            font-size: 18px;
+        h1 {
             color: #333;
-        }
-        .post p {
-            font-size: 16px;
-            color: #666;
         }
     </style>
 </head>
 <body>
 
     <h1>Mensagens Recebidas</h1>
-
     <div id="posts">
-        <!-- Os posts serão carregados aqui -->
+        <!-- As mensagens serão carregadas aqui -->
     </div>
 
     <script>
         async function obterToken() {
             const clientId = '8eb79fff-4794-4375-847b-b2487f5ae7d8'; // ID do cliente fornecido
-            const clientSecret = 'hopszCKsQSB0Y8f+SE9YygpuC8QKHvG1albZSHP/7DIynFkuHWaWdUEMTeBXwLzW819Ir7Rx47Qi8eJmoTLMXCLT62bGLQe7SFJ+1Gjo91jiCH+Qo4wft/ZsXclo3avP7ePqGPzYkNLL4zw4IJHjExCPUkHLGZLFTBfIy75x8Cc'; // Segredo do cliente fornecido
-            const tokenUrl = '<URL_DO_ENDPOINT_DE_AUTENTICAÇÃO>'; // SUBSTITUA pela URL do endpoint de autenticação
+            const clientSecret = 'hopszCKsQSB0Y8f+SE9YygpuC8QKHvG1albZSHP/7DIynFkuHWaWdUEMTeBXwLzW819Ir7Rx47Qi8EJmoTLMXCLT62bGLQe7SFJ+1Gjo91jiCH+Qo4wft/ZsXclo3avP7ePqGPzYkNLL4zw4IJHjExCPUkHLGZLFTBfIy75x8Cc'; // Segredo do cliente fornecido
+            const tokenUrl = 'https://oauth.livepix.gg/oauth2/token'; // Endpoint para obter o token
 
             try {
                 const response = await fetch(tokenUrl, {
@@ -52,7 +44,8 @@
                     body: new URLSearchParams({
                         'grant_type': 'client_credentials',
                         'client_id': clientId,
-                        'client_secret': clientSecret
+                        'client_secret': clientSecret,
+                        'scope': 'account:read wallet:read webhooks'
                     })
                 });
 
@@ -61,21 +54,20 @@
                 }
 
                 const data = await response.json();
-                console.log('Token de acesso:', data.access_token);
-                return data.access_token;
+                return data.access_token; // Retorna o token de acesso
             } catch (error) {
                 console.error('Erro:', error);
             }
         }
 
-        async function carregarPosts() {
-            const apiUrl = '<URL_DA_API>'; // SUBSTITUA pela URL da API para recuperar as mensagens
+        async function carregarMensagens() {
+            const apiUrl = 'https://api.livepix.gg/v1/messages'; // SUBSTITUA pela URL correta da API de mensagens
             const token = await obterToken(); // Obter o token de acesso
 
             try {
                 const response = await fetch(apiUrl, {
                     headers: {
-                        'Authorization': `Bearer ${token}`, // Configuração do cabeçalho com o token
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -85,30 +77,30 @@
                 }
 
                 const data = await response.json();
-                const posts = data.mensagens; // SUBSTITUA pelo formato correto da resposta da API
+                const mensagens = data.mensagens; // SUBSTITUA pelo formato correto da resposta da API
 
                 const container = document.getElementById('posts');
-                container.innerHTML = ''; // Limpa o conteúdo atual
+                container.innerHTML = ''; // Limpa o conteúdo anterior
 
-                posts.forEach(post => {
+                mensagens.forEach(msg => {
                     const div = document.createElement('div');
                     div.classList.add('post');
                     div.innerHTML = `
-                        <h3>${post.sender}</h3>
-                        <p>${post.message}</p>
+                        <p><strong>De:</strong> ${msg.sender}</p>
+                        <p><strong>Mensagem:</strong> ${msg.message}</p>
+                        <p><strong>Valor:</strong> ${msg.amount}</p>
                     `;
                     container.appendChild(div);
                 });
-
             } catch (error) {
-                console.error('Erro ao carregar as mensagens:', error);
+                console.error('Erro ao carregar mensagens:', error);
                 const container = document.getElementById('posts');
                 container.innerHTML = '<p style="color: red;">Erro ao carregar as mensagens. Tente novamente mais tarde.</p>';
             }
         }
 
-        // Carregar os posts assim que a página for aberta
-        carregarPosts();
+        // Carrega as mensagens ao abrir a página
+        carregarMensagens();
     </script>
 </body>
 </html>
